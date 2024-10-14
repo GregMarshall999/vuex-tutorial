@@ -21,6 +21,12 @@ const getters = {
     }
 };
 
+const mutations = {
+    reduicePrice: state => {
+        state.products.forEach(p => p.price -= 1);
+    }
+}
+
 const parseHalfPrice = price => {
     var hp = price / 2;
 
@@ -38,8 +44,10 @@ const parseHalfPrice = price => {
 };
 
 const store = createStore({
+    strict: true, //<-prevents state modification outside of mutation calls
     state, 
-    getters
+    getters, 
+    mutations
 });
 
 export default store;

@@ -23,7 +23,7 @@ const productList = computed(() => store.state.products);
 const listeSoldes = computed(() => store.getters.saleProducts);
 
 const reduicePrice = () => {
-    store.state.products.forEach(p => p.price -= 1);
+    store.commit('reduicePrice');
 }
 
 </script>
