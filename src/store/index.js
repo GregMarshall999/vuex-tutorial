@@ -1,4 +1,4 @@
-const { createStore } = require("vuex");
+import { createStore } from "vuex";
 
 const state = {
     products: [

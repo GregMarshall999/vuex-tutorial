@@ -1,6 +1,6 @@
 <template>
-  <ProductLister :productList="products"/>
-  <ProductViewer :products="products"/>
+  <ProductLister/>
+  <ProductViewer/>
 </template>
 
 <script setup>
