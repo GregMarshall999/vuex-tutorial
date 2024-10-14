@@ -23,12 +23,18 @@ const getters = {
 
 //Ex No ASYNC usage difficult debug tracking
 const mutations = {
-    reduicePrice: state => {
-        setTimeout(
-            () => state.products.forEach(p => p.price -= 1)
-        );
+    reducePrice: state => {
+        state.products.forEach(p => p.price -= 1);
     }
-}
+};
+
+const actions = {
+    reducePrice: context => {
+        setTimeout(() => {
+            context.commit('reducePrice');
+        }, 3000);
+    }
+};
 
 const parseHalfPrice = price => {
     var hp = price / 2;
@@ -50,7 +56,8 @@ const store = createStore({
     strict: true, //<-prevents state modification outside of mutation calls
     state, 
     getters, 
-    mutations
+    mutations, 
+    actions
 });
 
 export default store;

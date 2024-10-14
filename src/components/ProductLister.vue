@@ -23,7 +23,7 @@ const productList = computed(() => store.state.products);
 const listeSoldes = computed(() => store.getters.saleProducts);
 
 const reduicePrice = () => {
-    store.commit('reduicePrice');
+    store.dispatch('reducePrice');
 }
 
 </script>
