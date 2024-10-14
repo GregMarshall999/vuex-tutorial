@@ -21,9 +21,12 @@ const getters = {
     }
 };
 
+//Ex No ASYNC usage difficult debug tracking
 const mutations = {
     reduicePrice: state => {
-        state.products.forEach(p => p.price -= 1);
+        setTimeout(
+            () => state.products.forEach(p => p.price -= 1)
+        );
     }
 }
 
