@@ -5,7 +5,7 @@ const state = {
         { name: 'Bananes', price: 2 },
         { name: 'Pommes', price: 1 },
         { name: 'Salade', price: 3 },
-        { name: 'Abricots', price: 2 }
+        { name: 'Abricots', price: 2.33 }
     ]
 };
 
