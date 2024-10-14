@@ -8,6 +8,8 @@
                 <span class="price">{{ product.price }}€</span>
             </li>
         </ul>
+
+        <button @click="reduicePrice">Réduire Prix</button>
     </div>
 </template>
 
@@ -19,6 +21,10 @@ const store = useStore();
 
 const productList = computed(() => store.state.products);
 const listeSoldes = computed(() => store.getters.saleProducts);
+
+const reduicePrice = () => {
+    store.state.products.forEach(p => p.price -= 1);
+}
 
 </script>
 
