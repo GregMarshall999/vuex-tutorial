@@ -23,12 +23,20 @@ const getters = {
 
 //Ex No ASYNC usage difficult debug tracking
 const mutations = {
+    augmentPrice: (state, payload) => {
+        state.products.forEach(p => p.price += payload);
+    },
     reducePrice: state => {
         state.products.forEach(p => p.price -= 1);
     }
 };
 
 const actions = {
+    augmentPrice: (context, payload) => {
+        setTimeout(() => {
+            context.commit('augmentPrice', payload);
+        }, 2000);
+    },
     reducePrice: context => {
         setTimeout(() => {
             context.commit('reducePrice');
