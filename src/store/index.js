@@ -24,6 +24,9 @@ const getters = {
             }
         });
         return soldes;
+    }, 
+    getProduct: state => payload => {
+        return state.products[payload];
     }
 };
 
@@ -37,6 +40,12 @@ const mutations = {
     },
     reducePrice: state => {
         state.products.forEach(p => p.price -= 1);
+    }, 
+    setProduct: (state, payload) => {
+        state.products[payload.index] = payload.product;
+    }, 
+    deleteProduct: (state, payload) => {
+        state.products.splice(payload, 1);
     }
 };
 
@@ -55,6 +64,16 @@ const actions = {
         setTimeout(() => {
             context.commit('reducePrice');
         }, 3000);
+    }, 
+    updateProduct: (context, payload) => {
+        setTimeout(() => {
+            context.commit('setProduct', payload);
+        }, 1000);
+    }, 
+    removeProduct: (context, payload) => {
+        setTimeout(() => {
+            context.commit('deleteProduct', payload);
+        }, 1200);
     }
 };
 

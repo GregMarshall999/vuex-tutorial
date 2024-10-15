@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import ListerComp from '@/components/products/ListerComp.vue';
+import ListerComp from '@/components/ListerComp.vue';
 </script>
 
 <style>
