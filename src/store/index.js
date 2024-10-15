@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import { parseHalfPrice } from "@/helpers/ProductHelper";
 
 const state = {
     products: [
@@ -6,11 +7,16 @@ const state = {
         { name: 'Pommes', price: 1 },
         { name: 'Salade', price: 3 },
         { name: 'Abricots', price: 2.33 }
-    ]
+    ], 
+    sales: false
 };
 
 const getters = {
-    saleProducts: state => {
+    getProducts: state => {
+        if(!state.sales) {
+            return state.products;
+        }
+
         var soldes = state.products.map(p => {
             return {
                 name: `**${p.name}**`,
@@ -23,6 +29,9 @@ const getters = {
 
 //Ex No ASYNC usage difficult debug tracking
 const mutations = {
+    setSales: (state, payload) => {
+        state.sales = payload; //eventually payload bool check
+    },
     augmentPrice: (state, payload) => {
         state.products.forEach(p => p.price += payload);
     },
@@ -32,6 +41,11 @@ const mutations = {
 };
 
 const actions = {
+    updateSales: (context, payload) => {
+        setTimeout(() => {
+            context.commit('setSales', payload);
+        }, 1000);
+    },
     augmentPrice: (context, payload) => {
         setTimeout(() => {
             context.commit('augmentPrice', payload);
@@ -42,22 +56,6 @@ const actions = {
             context.commit('reducePrice');
         }, 3000);
     }
-};
-
-const parseHalfPrice = price => {
-    var hp = price / 2;
-
-    if(hp % 1 != 0) {
-        var precision = hp.toPrecision(3)
-
-        if(precision.split('.')[1].length > 2) {
-            return precision.substring(0, precision.split('.')[0].length + 3); //2 + le '.'
-        }
-        
-        return precision.toString();
-    }
-
-    return hp;
 };
 
 const store = createStore({

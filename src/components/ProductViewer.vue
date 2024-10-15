@@ -3,7 +3,7 @@
         <h2>Produits disponible</h2>
 
         <ul>
-            <li v-for="product in viewSoldes">
+            <li v-for="product in products">
                 <span class="name">{{ product.name }}</span>
                 <span class="price">{{ product.price }}€</span>
             </li>
@@ -17,8 +17,7 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 
-const products = computed(() => store.state.products);
-const viewSoldes = computed(() => store.getters.saleProducts);
+const products = computed(() => store.getters.getProducts);
 
 </script>
 
