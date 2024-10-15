@@ -1,9 +1,9 @@
 <template>
-  <ProductLister/>
-  <ProductViewer/>
+  <AdminProductView/>
+  <ProductSelectView/>
 </template>
 
 <script setup>
-import ProductLister from './components/ProductLister.vue';
-import ProductViewer from './components/ProductViewer.vue';
+import AdminProductView from './views/AdminProductView.vue';
+import ProductSelectView from './views/ProductSelectView.vue';
 </script>

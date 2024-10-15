@@ -2,12 +2,7 @@
     <div class="lister">
         <h2>Tableau Admin Produits</h2>
 
-        <ul>
-            <li v-for="product in products">
-                <span class="name">{{ product.name }}</span>
-                <span class="price">{{ product.price }}€</span>
-            </li>
-        </ul>
+        <ListerComp :isAdmin="true"/>
 
         <div class="admin-controls">
             <h3>Contrôlles Admin</h3>
@@ -26,16 +21,15 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import ListerComp from '@/components/products/ListerComp.vue';
+import { ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 
 const sales = ref(false);
-const products = computed(() => store.getters.getProducts);
 
 const updateSales = () => {
-    console.log(sales.value)
     store.dispatch('updateSales', sales.value);
 };
 const agmentPrice = amout => {
@@ -55,24 +49,6 @@ const reduicePrice = () => {
     margin-bottom: 30px;
     padding: 10px 20px;
     color: black;
-
-    ul {
-        padding: 0;
-
-        li{
-            display: inline-block;
-            margin-right: 10px;
-            margin-top: 10px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.432);
-        }
-
-        .price{
-            font-weight: bold;
-            color: #e8260c;
-            margin-left: 4px;
-        }
-    }
 
     .admin-controls {
         background: rgba(255, 255, 255, 0.432);
