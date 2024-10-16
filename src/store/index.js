@@ -27,6 +27,9 @@ const getters = {
     }, 
     getProduct: state => payload => {
         return state.products[payload];
+    }, 
+    countProducts: state => {
+        return state.products.length;
     }
 };
 
@@ -46,6 +49,9 @@ const mutations = {
     }, 
     deleteProduct: (state, payload) => {
         state.products.splice(payload, 1);
+    }, 
+    pushProduct: (state, payload) => {
+        state.products.push(payload);
     }
 };
 
@@ -74,6 +80,11 @@ const actions = {
         setTimeout(() => {
             context.commit('deleteProduct', payload);
         }, 1200);
+    }, 
+    addProduct: (context, payload) => {
+        setTimeout(() => {
+            context.commit('pushProduct', payload);
+        }, 1500);
     }
 };
 

@@ -12,6 +12,7 @@
                 <span class="price">{{ product.price }}€</span>
             </template>
         </ProductComp>
+        <slot></slot>
     </ul>
 </template>
 
@@ -37,7 +38,7 @@ const propSelected = index => {
 </script>
 
 <!--Style issue solved with mixin later-->
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/scss/ProductsStyle.scss';
 
 .admin {

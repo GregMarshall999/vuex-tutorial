@@ -4,8 +4,37 @@
 
         <ListerComp 
             :isAdmin="true"
-            @productSelected="selectProduct"
-        />
+            @productSelected="selectProduct">
+            <ProductComp 
+                v-if="!newProductMode" 
+                :index="productCount"
+                @selected="newProductMode = true"
+            >
+                <template #label>
+                    <span class="name">Nouveau Produit</span>
+                </template>
+                <template #default>
+                    <span class="price">+</span>
+                </template>
+            </ProductComp>
+            <li v-else>
+                <form @submit.prevent="newProduct">
+                    <input 
+                        type="text" 
+                        placeholder="Nom Produit..." 
+                        required
+                        v-model="product.name"
+                    />
+                    <input 
+                        type="number" 
+                        placeholder="Prix Produit..." 
+                        required
+                        v-model="product.price"
+                    />
+                    <button type="submit">Ajouter</button>
+                </form>
+            </li>
+        </ListerComp>
 
         <div class="admin-tools">
             <div class="admin-controls">
@@ -37,12 +66,15 @@
 
 <script setup>
 import ListerComp from '@/components/ListerComp.vue';
-import { reactive, ref } from 'vue';
+import ProductComp from '@/components/products/ProductComp.vue';
+import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 
 const sales = ref(false);
+
+const productCount = computed(() => store.getters.countProducts);
 
 const updateSales = () => {
     store.dispatch('updateSales', sales.value);
@@ -86,6 +118,18 @@ const deleteProduct = () => {
         store.dispatch('removeProduct', selectedIndex.value);
         selectedIndex.value = null;
     }
+
+    selectedProduct.name = '';
+    selectedProduct.price = 0;
+}
+const newProductMode = ref(false);
+const product = reactive({
+    name: null, 
+    price: null
+});
+const newProduct = () => {
+    store.dispatch('addProduct', product);
+    newProductMode.value = false;
 }
 
 </script>
