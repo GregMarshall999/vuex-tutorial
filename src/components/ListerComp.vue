@@ -22,7 +22,7 @@ import { useStore } from 'vuex';
 import ProductComp from './products/ProductComp.vue';
 
 const store = useStore();
-const products = computed(() => store.getters.getProducts);
+const products = computed(() => store.getters['products/getProducts']);
 
 const props = defineProps({
     isAdmin: {

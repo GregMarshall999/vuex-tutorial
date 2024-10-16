@@ -74,16 +74,16 @@ const store = useStore();
 
 const sales = ref(false);
 
-const productCount = computed(() => store.getters.countProducts);
+const productCount = computed(() => store.getters['products/countProducts']);
 
 const updateSales = () => {
-    store.dispatch('updateSales', sales.value);
+    store.dispatch('products/updateSales', sales.value);
 };
 const agmentPrice = amout => {
-    store.dispatch('augmentPrice', amout);
+    store.dispatch('products/augmentPrice', amout);
 };
 const reduicePrice = () => {
-    store.dispatch('reducePrice');
+    store.dispatch('products/reducePrice');
 };
 
 const selectedProduct = reactive({
@@ -93,14 +93,14 @@ const selectedProduct = reactive({
 const selectedIndex = ref(null);
 const selectProduct = index => {
     selectedIndex.value = index;
-    const storeProd = store.getters.getProduct(index);
+    const storeProd = store.getters['products/getProduct'](index);
 
     selectedProduct.name = storeProd.name;
     selectedProduct.price = storeProd.price;
 }
 const updateProduct = () => {
-    if(selectedIndex.value) {
-        store.dispatch('updateProduct', { 
+    if(selectedIndex.value != null) {
+        store.dispatch('products/updateProduct', { 
             index: selectedIndex.value, 
             product: {
                 name: selectedProduct.name, 
@@ -115,12 +115,11 @@ const updateProduct = () => {
 }
 const deleteProduct = () => {
     if(selectedIndex.value) {
-        store.dispatch('removeProduct', selectedIndex.value);
+        store.dispatch('products/removeProduct', selectedIndex.value);
         selectedIndex.value = null;
+        selectedProduct.name = '';
+        selectedProduct.price = 0;
     }
-
-    selectedProduct.name = '';
-    selectedProduct.price = 0;
 }
 const newProductMode = ref(false);
 const product = reactive({
@@ -128,7 +127,7 @@ const product = reactive({
     price: null
 });
 const newProduct = () => {
-    store.dispatch('addProduct', product);
+    store.dispatch('products/addProduct', product);
     newProductMode.value = false;
 }
 
