@@ -19,8 +19,8 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 
-const addToCart = index => {
-    const product = store.getters['products/getProduct'](index);
+const addToCart = payload => {
+    const product = store.getters['products/getProduct'](payload.index);
 
     if(product) {
         store.dispatch('cart/putInCart', product.name);

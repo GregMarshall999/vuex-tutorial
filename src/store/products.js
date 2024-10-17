@@ -1,12 +1,8 @@
 import { parseHalfPrice } from "@/helpers/ProductHelper";
+import { findProducts, updateProduct, deleteProduct, createProduct } from "@/service/productService";
 
 const state = {
-    products: [
-        { name: 'Bananes', price: 2 },
-        { name: 'Pommes', price: 1 },
-        { name: 'Salade', price: 3 },
-        { name: 'Abricots', price: 2.33 }
-    ], 
+    products: [], 
     sales: false
 };
 
@@ -53,54 +49,87 @@ const getters = {
 const mutations = {
     setSales: (state, payload) => {
         state.sales = payload; //eventually payload bool check
-    },
-    augmentPrice: (state, payload) => {
-        state.products.forEach(p => p.price += payload);
-    },
-    reducePrice: state => {
-        state.products.forEach(p => p.price -= 1);
     }, 
-    setProduct: (state, payload) => {
-        state.products[payload.index] = payload.product;
-    }, 
-    deleteProduct: (state, payload) => {
-        state.products.splice(payload, 1);
-    }, 
-    pushProduct: (state, payload) => {
-        state.products.push(payload);
+    setProducts: (state, payload) => {
+        state.products = payload;
     }
 };
 
 const actions = {
+    loadProducts: context => {
+        findProducts()
+            .then(res => {
+                context.commit('setProducts', res.data)
+            })
+            .catch(error => {
+                console.error('Error loading products', error);
+            });
+    },
     updateSales: (context, payload) => {
         setTimeout(() => {
             context.commit('setSales', payload);
         }, 1000);
     },
-    augmentPrice: (context, payload) => {
-        setTimeout(() => {
-            context.commit('augmentPrice', payload);
-        }, 2000);
+    augmentPrice: async (context, payload) => { //TODO with reduce, place in helper
+        const prods = context.getters.getProducts
+            .map((p) => {
+                return {
+                    id: p.id, 
+                    name: p.name, 
+                    price: p.price
+                };
+            }); //cannot edit state from actions
+        
+        for(var p of prods) {
+            p.price += payload
+            await updateProduct(p.id, p);
+        }
+
+        context.dispatch('loadProducts');
     },
-    reducePrice: context => {
-        setTimeout(() => {
-            context.commit('reducePrice');
-        }, 3000);
+    reducePrice: async context => {
+        const prods = context.getters.getProducts
+            .map((p) => {
+                return {
+                    id: p.id, 
+                    name: p.name, 
+                    price: p.price
+                };
+            });
+        
+        for(var p of prods) {
+            p.price -= 1
+            await updateProduct(p.id, p);
+        }
+
+        context.dispatch('loadProducts');
     }, 
-    updateProduct: (context, payload) => {
-        setTimeout(() => {
-            context.commit('setProduct', payload);
-        }, 1000);
+    updateProduct: async (context, payload) => {
+        updateProduct(payload.id, payload).then(res => {
+            if(res.status == 200) { //ATTENTION, validation non exaustive
+                context.dispatch('loadProducts');
+            }            
+        });
     }, 
     removeProduct: (context, payload) => {
-        setTimeout(() => {
-            context.commit('deleteProduct', payload);
-        }, 1200);
+        deleteProduct(payload).then(res => {
+            if(res.status == 200) {
+                context.dispatch('loadProducts');
+            }
+        });
     }, 
-    addProduct: (context, payload) => {
-        setTimeout(() => {
-            context.commit('pushProduct', payload);
-        }, 1500);
+    addProduct: (context, payload) => {        
+        const prod = {
+            name: payload.name, 
+            price: payload.price
+        }
+
+        createProduct(prod).then(res => {
+            console.log(res);
+            if(res.status == 201) {
+                context.dispatch('loadProducts');
+            }
+        });
     }
 };
 

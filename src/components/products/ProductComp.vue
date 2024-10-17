@@ -1,5 +1,5 @@
 <template>
-    <li @click="emit('selected', index)">
+    <li @click="clicked">
         <slot name="label"></slot>
         <slot></slot>
     </li>
@@ -10,7 +10,19 @@ const props = defineProps({
     index: {
         type: Number, 
         required: true
+    }, 
+    id: {
+        type: String
     }
 });
 const emit = defineEmits(['selected']);
+
+const clicked = () => {
+    if(props.id) {
+        emit('selected', { index: props.index, id: props.id });
+    }
+    else {
+        emit('selected', props.index);
+    }    
+}
 </script>

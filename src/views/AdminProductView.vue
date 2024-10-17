@@ -91,9 +91,11 @@ const selectedProduct = reactive({
     price: 0
 });
 const selectedIndex = ref(null);
-const selectProduct = index => {
-    selectedIndex.value = index;
-    const storeProd = store.getters['products/getProduct'](index);
+const selectedId = ref(null);
+const selectProduct = payload => {
+    selectedIndex.value = payload.index;
+    selectedId.value = payload.id;
+    const storeProd = store.getters['products/getProduct'](payload.index);
 
     selectedProduct.name = storeProd.name;
     selectedProduct.price = storeProd.price;
@@ -101,13 +103,12 @@ const selectProduct = index => {
 const updateProduct = () => {
     if(selectedIndex.value != null) {
         store.dispatch('products/updateProduct', { 
-            index: selectedIndex.value, 
-            product: {
-                name: selectedProduct.name, 
-                price: selectedProduct.price
-            }
+            id: selectedId.value,
+            name: selectedProduct.name, 
+            price: selectedProduct.price
         });
 
+        selectedId.value = null;
         selectedIndex.value = null;
         selectedProduct.name = '';
         selectedProduct.price = 0;
@@ -115,7 +116,8 @@ const updateProduct = () => {
 }
 const deleteProduct = () => {
     if(selectedIndex.value) {
-        store.dispatch('products/removeProduct', selectedIndex.value);
+        store.dispatch('products/removeProduct', selectedId.value);
+        selectedId.value = null;
         selectedIndex.value = null;
         selectedProduct.name = '';
         selectedProduct.price = 0;
