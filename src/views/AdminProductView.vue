@@ -9,6 +9,7 @@
                 v-if="!newProductMode" 
                 :index="productCount"
                 @selected="newProductMode = true"
+                :disabled="editProductMode"
             >
                 <template #label>
                     <span class="name">Nouveau Produit</span>
@@ -18,21 +19,12 @@
                 </template>
             </ProductComp>
             <li v-else>
-                <form @submit.prevent="newProduct">
-                    <input 
-                        type="text" 
-                        placeholder="Nom Produit..." 
-                        required
-                        v-model="product.name"
-                    />
-                    <input 
-                        type="number" 
-                        placeholder="Prix Produit..." 
-                        required
-                        v-model="product.price"
-                    />
-                    <button type="submit">Ajouter</button>
-                </form>
+                <ProductForm
+                    :fields="formFields" 
+                    :submitButtonText="'Ajouter'"
+                    @success="newProduct"
+                />
+                <button class="cancel" @click="newProductMode = false">Annuler</button>
             </li>
         </ListerComp>
 
@@ -51,13 +43,15 @@
                 <button @click="reduicePrice">Réduire Prix</button>
             </div>
 
-            <div class="product-editor">
-                <form @submit.prevent="updateProduct">
-                    <h3>Editer un Produit</h3>
-                    <input type="text" v-model="selectedProduct.name" placeholder="Nom Produit"/>
-                    <input type="number" v-model="selectedProduct.price" placeholder="Prix Produit"/>
-                    <button type="submit">Editer</button>               
-                </form>
+            <div class="product-editor" v-show="!newProductMode">
+                <h3 style="margin-bottom: 1em;">Editer un Produit</h3>
+
+                <ProductForm
+                    :fields="formFields"
+                    :submitButtonText="'Editer'"
+                    @success="updateProduct"
+                />
+
                 <button @click="deleteProduct">Supprimer</button>
             </div>
         </div>
@@ -67,12 +61,31 @@
 <script setup>
 import ListerComp from '@/components/ListerComp.vue';
 import ProductComp from '@/components/products/ProductComp.vue';
+import ProductForm from '@/components/products/form/ProductForm.vue';
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
+import { requiredText, requiredPositiveNumber } from '@/helpers/ValidationHelper';
 
 const store = useStore();
 
 const sales = ref(false);
+const newProductMode = ref(false);
+const editProductMode = ref(false);
+
+const formFields = reactive([
+    { 
+        placeholder: 'Nom Produit...', 
+        type: 'text', 
+        value: null,
+        rules: [requiredText] 
+    }, 
+    {
+        placeholder: 'Prix Produit...', 
+        type: 'number', 
+        value: null,
+        rules: [requiredPositiveNumber]
+    }
+]);
 
 const productCount = computed(() => store.getters['products/countProducts']);
 
@@ -86,32 +99,33 @@ const reduicePrice = () => {
     store.dispatch('products/reducePrice');
 };
 
-const selectedProduct = reactive({
-    name: '', 
-    price: 0
-});
 const selectedIndex = ref(null);
 const selectedId = ref(null);
 const selectProduct = payload => {
-    selectedIndex.value = payload.index;
-    selectedId.value = payload.id;
-    const storeProd = store.getters['products/getProduct'](payload.index);
+    if(!newProductMode.value) {
+        editProductMode.value = true;
 
-    selectedProduct.name = storeProd.name;
-    selectedProduct.price = storeProd.price;
+        selectedIndex.value = payload.index;
+        selectedId.value = payload.id;
+        const storeProd = store.getters['products/getProduct'](payload.index);
+
+        formFields[0].value = storeProd.name;
+        formFields[1].value = storeProd.price;
+    }
 }
-const updateProduct = () => {
+const updateProduct = result => {
     if(selectedIndex.value != null) {
         store.dispatch('products/updateProduct', { 
             id: selectedId.value,
-            name: selectedProduct.name, 
-            price: selectedProduct.price
+            name: result[0], 
+            price: result[1]
         });
 
         selectedId.value = null;
         selectedIndex.value = null;
-        selectedProduct.name = '';
-        selectedProduct.price = 0;
+        editProductMode.value = false;
+        formFields[0].value = null;
+        formFields[1].value = null;
     } 
 }
 const deleteProduct = () => {
@@ -119,23 +133,28 @@ const deleteProduct = () => {
         store.dispatch('products/removeProduct', selectedId.value);
         selectedId.value = null;
         selectedIndex.value = null;
-        selectedProduct.name = '';
-        selectedProduct.price = 0;
+        editProductMode.value = false;
+        formFields[0].value = null;
+        formFields[1].value = null;
     }
 }
-const newProductMode = ref(false);
-const product = reactive({
-    name: null, 
-    price: null
-});
-const newProduct = () => {
+const newProduct = result => {
+    const product = {};
+    const keys = ['name', 'price']; // <- peut etre recupéré depuis une DTO ou interface
+    
+    for(var i = 0; i < result.length; i++) {
+        product[keys[i]] = result[i];
+    }
+
     store.dispatch('products/addProduct', product);
+    
+    formFields.forEach(field => field.value = null);
     newProductMode.value = false;
 }
-
 </script>
 
-<style>
+<style lang="scss">
+@import '@/scss/GlobalStyle.scss';
 
 .lister {
     background: #6b662a;
@@ -143,6 +162,11 @@ const newProduct = () => {
     margin-bottom: 30px;
     padding: 10px 20px;
     color: black;
+
+    .cancel {
+        @include button;
+        margin-top: 1em;
+    }
 
     .admin-tools {
         background: rgba(255, 255, 255, 0.432);
@@ -227,13 +251,9 @@ const newProduct = () => {
         }
 
         button {
-            width: fit-content;
-            padding: 10px;
-            border-radius: 0;
-            border: none;
+            @include button;
         }
     }
-    
 }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <li @click="clicked">
+    <li :class="{ disabled : disabled }" @click="clicked">
         <slot name="label"></slot>
         <slot></slot>
     </li>
@@ -13,16 +13,29 @@ const props = defineProps({
     }, 
     id: {
         type: String
+    }, 
+    disabled: {
+        type: Boolean
     }
 });
 const emit = defineEmits(['selected']);
 
 const clicked = () => {
-    if(props.id) {
-        emit('selected', { index: props.index, id: props.id });
+    if(!props.disabled) {
+        if(props.id) {
+            emit('selected', { index: props.index, id: props.id });
+        }
+        else {
+            emit('selected', props.index);
+        } 
     }
-    else {
-        emit('selected', props.index);
-    }    
 }
 </script>
+
+<style>
+
+.disabled {
+    text-decoration: line-through;
+}
+
+</style>

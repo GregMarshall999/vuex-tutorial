@@ -125,7 +125,6 @@ const actions = {
         }
 
         createProduct(prod).then(res => {
-            console.log(res);
             if(res.status == 201) {
                 context.dispatch('loadProducts');
             }
