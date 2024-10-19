@@ -28,7 +28,7 @@
             </li>
         </ListerComp>
 
-        <div class="admin-tools">
+        <div class="admin-tools" ref="adminMouse">
             <div class="admin-controls">
                 <h3>Contrôlles Admin</h3>
                 <label class="sales-toggle">
@@ -54,6 +54,8 @@
 
                 <button @click="deleteProduct">Supprimer</button>
             </div>
+
+            <p>x:{{ x }} | y:{{ y }}</p>
         </div>
     </div>
 </template>
@@ -65,6 +67,7 @@ import ProductForm from '@/components/products/form/ProductForm.vue';
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { requiredText, requiredPositiveNumber } from '@/helpers/ValidationHelper';
+import { useMouse } from '@/composables/mouse';
 
 const store = useStore();
 
@@ -151,6 +154,9 @@ const newProduct = result => {
     formFields.forEach(field => field.value = null);
     newProductMode.value = false;
 }
+
+const adminMouse = ref(null);
+const { x, y } = useMouse(adminMouse); 
 </script>
 
 <style lang="scss">
