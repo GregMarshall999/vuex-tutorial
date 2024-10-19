@@ -19,5 +19,9 @@ export default defineConfig({
         api: 'modern-compiler',
       },
     },
+  }, 
+  test: {
+    globals: true,
+    environment: 'jsdom'
   }
 })
