@@ -1,5 +1,5 @@
 import { parseHalfPrice } from "@/helpers/ProductHelper";
-import { findProducts, updateProduct, deleteProduct, createProduct } from "@/service/productService";
+import { findProducts, updateProduct, deleteProduct, createProduct } from "@/service/product.service";
 
 const state = {
     products: [], 

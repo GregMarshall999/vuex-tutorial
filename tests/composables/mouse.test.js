@@ -1,7 +1,6 @@
 import { useMouse } from "@/composables/mouse";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ref } from "vue";
-import { mount } from '@vue/test-utils'
 
 describe('useMouse Composable', () => {
     let element;

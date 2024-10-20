@@ -1,7 +1,7 @@
 import { describe, beforeEach, afterEach, it, expect } from "vitest";
 import axios from "axios";
 import MockAdapter from 'axios-mock-adapter';
-import { findProducts, updateProduct, deleteProduct, createProduct } from "@/service/productService";
+import { findProducts, updateProduct, deleteProduct, createProduct } from "@/service/product.service";
 
 describe('Product Service', () => {
     let mock;
